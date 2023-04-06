@@ -1,0 +1,11 @@
+server:
+  port: 1016
+datasource:
+  driverName: mysql
+  host: 1.15.86.236
+  port: 3306
+  database: recommend_sys
+  username: schoolHW
+  password: hxajsWGfc6amwf52
+  charset: utf8
+  log-mode: true
