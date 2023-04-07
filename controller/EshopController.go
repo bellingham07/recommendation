@@ -14,16 +14,11 @@ import (
 func Register(ctx *gin.Context) {
 	db := common.GetDB()
 	//获取参数
-	var requestUser = model.TbEshop{}
-	ctx.Bind(requestUser)
-	fmt.Println("__________________________________________________")
-	fmt.Println(requestUser)
-	account := requestUser.Username
-	telephone := requestUser.Tel
-	name := requestUser.Name
-	password := requestUser.Password
+	account := ctx.PostForm("username")
+	telephone := ctx.PostForm("phonenumber")
+	name := ctx.PostForm("name")
+	password := ctx.PostForm("password")
 	//数据验证
-
 	if isTelephoneExist(db, telephone) {
 		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "用户已经存在")
 		return
