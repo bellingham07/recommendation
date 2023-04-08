@@ -7,11 +7,12 @@ import (
 	"gorm.io/gorm"
 	"net/http"
 	"recommendation/common"
+	"recommendation/dto"
 	"recommendation/model"
 	"recommendation/response"
 )
 
-func Register(ctx *gin.Context) {
+func EshopRegister(ctx *gin.Context) {
 	db := common.GetDB()
 	//获取参数
 	account := ctx.PostForm("username")
@@ -55,6 +56,42 @@ func Register(ctx *gin.Context) {
 	}
 
 	response.Success(ctx, gin.H{"token": token}, "注册成功")
+}
+
+func EshopLogin(ctx *gin.Context) {
+	db := common.GetDB()
+	//get parameter
+	username := ctx.PostForm("username")
+	password := ctx.PostForm("password")
+
+	//Determine if the user exists
+	var eshop model.TbEshop
+	db.Where("username=?", username).First(&eshop)
+	if eshop.Id == 0 {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "user is not exist"})
+		return
+	}
+	//Determine if the password is correct
+	if err := bcrypt.CompareHashAndPassword([]byte(eshop.Password), []byte(password)); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "password is error"})
+		return
+	}
+
+	//distribute token
+	token, err := common.ReleaseToken(eshop)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "server error"})
+	}
+
+	//return result
+	response.Success(ctx, gin.H{"token": token}, "login successful")
+}
+
+func Info(ctx *gin.Context) {
+	user, _ := ctx.Get("user")
+
+	ctx.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": dto.ToUserDto(user.(model.TbEshop))}})
+
 }
 
 func isTelephoneExist(db *gorm.DB, telephone string) bool {
