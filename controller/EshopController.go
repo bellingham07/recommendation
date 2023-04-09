@@ -1,10 +1,8 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"net/http"
 	"recommendation/common"
 	"recommendation/dto"
@@ -20,7 +18,7 @@ func EshopRegister(ctx *gin.Context) {
 	name := ctx.PostForm("name")
 	password := ctx.PostForm("password")
 	//数据验证
-	if isTelephoneExist(db, telephone) {
+	if common.IsTelephoneExist(db, telephone) {
 		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "用户已经存在")
 		return
 	}
@@ -64,7 +62,7 @@ func EshopLogin(ctx *gin.Context) {
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
 
-	//Determine if the user exists
+	//Determine if the user existed
 	var eshop model.TbEshop
 	db.Where("username=?", username).First(&eshop)
 	if eshop.Id == 0 {
@@ -73,7 +71,7 @@ func EshopLogin(ctx *gin.Context) {
 	}
 	//Determine if the password is correct
 	if err := bcrypt.CompareHashAndPassword([]byte(eshop.Password), []byte(password)); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "password is error"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "password is not correct"})
 		return
 	}
 
@@ -92,14 +90,4 @@ func Info(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": dto.ToUserDto(user.(model.TbEshop))}})
 
-}
-
-func isTelephoneExist(db *gorm.DB, telephone string) bool {
-	var user model.TbEshop
-	db.Where("tel=?", telephone).First(&user)
-	if user.Id != 0 {
-		fmt.Println("are kidding me?")
-		return true
-	}
-	return false
 }
