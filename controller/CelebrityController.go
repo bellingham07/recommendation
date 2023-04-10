@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -90,4 +91,27 @@ func CeleLogin(ctx *gin.Context) {
 	}
 
 	response.Success(ctx, gin.H{"data": token}, "register successful")
+}
+
+func GetUserInfo(ctx *gin.Context) {
+	//db := common.GetDB()
+
+	//username := ctx.PostForm("username")
+	//
+	//var cele model.TbCelebrity
+	//db.Where("username=?", username).First(&cele)
+	tokenString := ctx.GetHeader("Authorization")
+
+	fmt.Println(tokenString)
+	token, claims, err := common.ParseToken(tokenString)
+	//解析失败或者token无效
+	if err != nil || !token.Valid {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+		ctx.Abort()
+		return
+	}
+
+	//验证通过后获取claims中的userId
+	userId := claims.UserId
+	fmt.Println(userId)
 }

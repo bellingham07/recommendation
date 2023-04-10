@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"os"
 	"recommendation/common"
-	"recommendation/routes"
+	"recommendation/initial"
 )
 
 func main() {
@@ -21,8 +20,9 @@ func main() {
 			return
 		}
 	}()
-	r := gin.Default()
-	r = routes.CollectRoute(r)             //配置路由
+	//r := gin.Default()
+	//r = myRouters.CollectRoute(r)          //配置路由
+	r := initial.Routers()
 	port := viper.GetString("server.port") //获取配置类所设置的端口号
 	if port != "" {
 		panic(r.Run(":" + port))
