@@ -13,3 +13,10 @@ func ToUserDto(user model.TbEshop) UserDto {
 		Password: user.Password,
 	}
 }
+
+func ToCeleDto(user model.TbCelebrity) UserDto {
+	return UserDto{
+		Username: user.Name,
+		Password: user.Password,
+	}
+}

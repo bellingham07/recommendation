@@ -16,7 +16,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		//validate token format
 		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足1"})
 			ctx.Abort()
 			return
 		}
@@ -25,7 +25,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		token, claims, err := common.ParseToken(tokenString)
 		//解析失败或者token无效
 		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足2"})
 			ctx.Abort()
 			return
 		}
@@ -38,7 +38,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		//用户信息失效
 		if user.Id == 0 {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足3"})
 			ctx.Abort()
 			return
 		}
@@ -57,7 +57,7 @@ func AuthMiddlewareForCele() gin.HandlerFunc {
 
 		//validate token format
 		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足1"})
 			ctx.Abort()
 			return
 		}
@@ -66,7 +66,7 @@ func AuthMiddlewareForCele() gin.HandlerFunc {
 		token, claims, err := common.ParseToken(tokenString)
 		//解析失败或者token无效
 		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足2"})
 			ctx.Abort()
 			return
 		}
@@ -79,14 +79,13 @@ func AuthMiddlewareForCele() gin.HandlerFunc {
 
 		//用户信息失效
 		if user.Id == 0 {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足3"})
 			ctx.Abort()
 			return
 		}
 
 		//用户信息存在 将user信息写入上下文
 		ctx.Set("user", user)
-
 		ctx.Next()
 	}
 }

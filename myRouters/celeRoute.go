@@ -15,7 +15,7 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 	{
 		cg.POST("/register", controller.CeleRegister)
 		cg.POST("/login", controller.CeleLogin)
-		cg.POST("/info", middleware.AuthMiddlewareForCele(), controller.Info)
+		cg.POST("/info", middleware.AuthMiddlewareForCele(), controller.InfoForCele)
 		cg.GET("/find", controller.GetUserInfo)
 	}
 }

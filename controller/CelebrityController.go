@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"recommendation/common"
 	"recommendation/model"
 	"recommendation/response"
+	"strings"
 )
 
 func CeleRegister(ctx *gin.Context) {
@@ -90,19 +90,21 @@ func CeleLogin(ctx *gin.Context) {
 		panic(err)
 	}
 
-	response.Success(ctx, gin.H{"data": token}, "register successful")
+	response.Success(ctx, gin.H{"token": token}, "register successful")
 }
 
 func GetUserInfo(ctx *gin.Context) {
-	//db := common.GetDB()
-
-	//username := ctx.PostForm("username")
-	//
-	//var cele model.TbCelebrity
-	//db.Where("username=?", username).First(&cele)
+	//获取authorization header
 	tokenString := ctx.GetHeader("Authorization")
 
-	fmt.Println(tokenString)
+	//validate token format
+	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+		ctx.Abort()
+		return
+	}
+	tokenString = tokenString[7:] //Bearer 占七位
+
 	token, claims, err := common.ParseToken(tokenString)
 	//解析失败或者token无效
 	if err != nil || !token.Valid {
@@ -111,7 +113,20 @@ func GetUserInfo(ctx *gin.Context) {
 		return
 	}
 
-	//验证通过后获取claims中的userId
-	userId := claims.UserId
-	fmt.Println(userId)
+	// connect database
+	db := common.GetDB()
+	var cele model.TbCelebrity
+	db.Where("id=?", claims.UserId).First(&cele)
+
+	newCele := model.TbCelebrity{
+		Username:    cele.Username,
+		PhoneNumber: cele.PhoneNumber,
+		Email:       cele.Email,
+		Name:        cele.Name,
+		RealName:    cele.RealName,
+		Sex:         cele.Sex,
+		Age:         cele.Age,
+		Intro:       cele.Intro, CreditPoint: cele.CreditPoint,
+	}
+	response.Success(ctx, gin.H{"data": newCele}, "successful")
 }
