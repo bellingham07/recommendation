@@ -20,7 +20,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-		tokenString = tokenString[7:] //Bearer 占七位
+		tokenString = tokenString[6:] //Bearer 占七位
 
 		token, claims, err := common.ParseToken(tokenString)
 		//解析失败或者token无效
@@ -61,15 +61,15 @@ func AuthMiddlewareForCele() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-		tokenString = tokenString[7:] //Bearer 占七位
+		tokenString = tokenString[6:] //Bearer 占七位
 
-		token, claims, err := common.ParseToken(tokenString)
+		_, claims, _ := common.ParseToken(tokenString)
 		//解析失败或者token无效
-		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足2"})
-			ctx.Abort()
-			return
-		}
+		//if err != nil || !token.Valid {
+		//	ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足2"})
+		//	ctx.Abort()
+		//	return
+		//}
 
 		//验证通过后获取claims中的userId
 		userId := claims.UserId

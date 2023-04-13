@@ -3,8 +3,8 @@ package dto
 import "recommendation/model"
 
 type UserDto struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" form:"username" binding:"required"`
+	Password string `json:"password" form:"password" binding:"required"`
 }
 
 func ToUserDto(user model.TbEshop) UserDto {

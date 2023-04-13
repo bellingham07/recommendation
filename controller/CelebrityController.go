@@ -5,6 +5,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"recommendation/common"
+	"recommendation/dto"
 	"recommendation/model"
 	"recommendation/response"
 	"strings"
@@ -66,6 +67,7 @@ func CeleRegister(ctx *gin.Context) {
 func CeleLogin(ctx *gin.Context) {
 	// connect database
 	db := common.GetDB()
+
 	// get parameter
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
@@ -90,25 +92,24 @@ func CeleLogin(ctx *gin.Context) {
 		panic(err)
 	}
 
-	response.Success(ctx, gin.H{"token": token}, "register successful")
+	response.Success(ctx, gin.H{"token": token}, "login successful")
 }
 
 func GetUserInfo(ctx *gin.Context) {
 	//获取authorization header
 	tokenString := ctx.GetHeader("Authorization")
-
 	//validate token format
 	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足1.0"})
 		ctx.Abort()
 		return
 	}
-	tokenString = tokenString[7:] //Bearer 占七位
+	tokenString = tokenString[6:] //Bearer 占七位
 
 	token, claims, err := common.ParseToken(tokenString)
 	//解析失败或者token无效
 	if err != nil || !token.Valid {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足2.0"})
 		ctx.Abort()
 		return
 	}
@@ -126,7 +127,13 @@ func GetUserInfo(ctx *gin.Context) {
 		RealName:    cele.RealName,
 		Sex:         cele.Sex,
 		Age:         cele.Age,
-		Intro:       cele.Intro, CreditPoint: cele.CreditPoint,
+		Intro:       cele.Intro,
+		CreditPoint: cele.CreditPoint,
 	}
 	response.Success(ctx, gin.H{"data": newCele}, "successful")
+}
+
+func InfoForCele(ctx *gin.Context) {
+	user, _ := ctx.Get("user")
+	ctx.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": dto.ToCeleDto(user.(model.TbCelebrity))}})
 }
