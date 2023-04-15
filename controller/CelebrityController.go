@@ -79,7 +79,6 @@ func CeleLogin(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 500, "mag": "user is not existed"})
 		return
 	}
-
 	//determine if the password is correct
 	if err := bcrypt.CompareHashAndPassword([]byte(cele.Password), []byte(password)); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"code": 500, "msg": "password is not correct"})
@@ -104,7 +103,7 @@ func GetUserInfo(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	tokenString = tokenString[6:] //Bearer 占七位
+	tokenString = tokenString[6:] //Bearer 占六位
 
 	token, claims, err := common.ParseToken(tokenString)
 	//解析失败或者token无效
