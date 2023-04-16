@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -135,4 +136,14 @@ func GetUserInfo(ctx *gin.Context) {
 func InfoForCele(ctx *gin.Context) {
 	user, _ := ctx.Get("user")
 	ctx.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": dto.ToCeleDto(user.(model.TbCelebrity))}})
+}
+
+func UpdateInfo(ctx *gin.Context) {
+	db := common.GetDB()
+	var cele model.TbCelebrity
+	err := ctx.ShouldBind(&cele)
+	fmt.Println(err)
+	fmt.Println(cele.Age)
+	res := db.Model(&cele).Where("phone_number=?", cele.PhoneNumber).Updates(model.TbCelebrity{Name: cele.Name, PhoneNumber: cele.PhoneNumber, Sex: cele.Sex, Age: cele.Age, Intro: cele.Intro})
+	fmt.Println(res)
 }

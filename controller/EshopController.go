@@ -91,3 +91,11 @@ func Info(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": dto.ToUserDto(user.(model.TbEshop))}})
 
 }
+
+func GetAllUser(ctx *gin.Context) {
+	db := common.GetDB()
+	var eshop []model.TbEshop
+	db.Select("id,name,tel,email,avatar,intro,platform,platform_url,credit_point,age").Find(&eshop)
+
+	response.Success(ctx, gin.H{"data": eshop}, "success")
+}
