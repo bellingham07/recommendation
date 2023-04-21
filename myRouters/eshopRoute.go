@@ -16,5 +16,6 @@ func (*EshopRoute) InitEshopRoute(g *gin.RouterGroup) {
 		eg.POST("/register", controller.EshopRegister)                //注册
 		eg.POST("/login", controller.EshopLogin)                      //登录
 		eg.GET("/info", middleware.AuthMiddleware(), controller.Info) //用中间件保护我们用户信息结构 用户信息
+		eg.POST("/saveGood", controller.SaveGood)
 	}
 }

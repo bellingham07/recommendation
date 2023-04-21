@@ -19,5 +19,6 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.GET("/find", controller.GetUserInfo)
 		cg.POST("/updateInfo", controller.UpdateInfo)
 		cg.GET("/findAll", controller.GetAllUser)
+		cg.GET("/allGoods", controller.GetAll)
 	}
 }
