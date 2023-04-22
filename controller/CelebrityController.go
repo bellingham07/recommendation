@@ -143,7 +143,6 @@ func UpdateInfo(ctx *gin.Context) {
 	var cele model.TbCelebrity
 	err := ctx.ShouldBind(&cele)
 	fmt.Println(err)
-	fmt.Println(cele.Age)
 	res := db.Model(&cele).Where("phone_number=?", cele.PhoneNumber).Updates(model.TbCelebrity{Name: cele.Name, PhoneNumber: cele.PhoneNumber, Sex: cele.Sex, Age: cele.Age, Intro: cele.Intro})
 	fmt.Println(res)
 }
