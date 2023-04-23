@@ -6,7 +6,7 @@ func IsGoodExist(name string) bool {
 	db := GetDB()
 	var good model.TbGood
 	db.Where("name=?", name).First(&good)
-	if good.Id != 0 {
+	if good.Id != "" {
 		return true
 	}
 	return false

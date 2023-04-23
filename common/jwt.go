@@ -9,14 +9,14 @@ import (
 var jwtKey = []byte("a_secret_crect")
 
 type Claims struct {
-	UserId uint
+	UserId string
 	jwt.StandardClaims
 }
 
 func ReleaseToken(user model.TbEshop) (string, error) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 	claims := &Claims{
-		UserId: uint(user.Id),
+		UserId: user.Id,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
@@ -36,7 +36,7 @@ func ReleaseToken(user model.TbEshop) (string, error) {
 func ReleaseTokenForCele(user model.TbCelebrity) (string, error) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 	claims := &Claims{
-		UserId: uint(user.Id),
+		UserId: user.Id,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 			IssuedAt:  time.Now().Unix(),

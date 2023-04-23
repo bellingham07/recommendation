@@ -13,11 +13,15 @@ func (*EshopRoute) InitEshopRoute(g *gin.RouterGroup) {
 	// eshop 路由
 	eg := g.Group("/eshop")
 	{
-		eg.POST("/register", controller.EshopRegister)                //注册
-		eg.POST("/login", controller.EshopLogin)                      //登录
+		eg.POST("/register", controller.EshopRegister) //注册
+		eg.POST("/login", controller.EshopLogin)       //登录
+		eg.POST("/saveGood", controller.SaveGood)      //新增商品
+		eg.POST("/status", controller.ChangeStatus)
+		eg.POST("/update", controller.UpdateEshop)
+
 		eg.GET("/info", middleware.AuthMiddleware(), controller.Info) //用中间件保护我们用户信息结构 用户信息
 		eg.GET("/getAllGoods", controller.GetAllGoods)                //获取全部商品
-		eg.POST("/saveGood", controller.SaveGood)                     //新增商品
-
+		eg.GET("/findAll", controller.GetAll)                         //获取全部网红
+		eg.GET("/find", controller.GetEshopInfo)
 	}
 }

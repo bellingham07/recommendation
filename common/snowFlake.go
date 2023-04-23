@@ -1,55 +1,46 @@
 package common
 
 import (
-	"errors"
-	"sync"
+	"strconv"
 	"time"
 )
 
 const (
-	workerBits  uint8 = 10
-	numberBits  uint8 = 12
-	workerMax   int64 = -1 ^ (-1 << workerBits)
-	numberMax   int64 = -1 ^ (-1 << numberBits)
-	timeShift   uint8 = workerBits + numberBits
-	workerShift uint8 = numberBits
-	startTime   int64 = 1525705533000 // 如果在程序跑了一段时间修改了epoch这个值 可能会导致生成相同的ID
+	nodeBits uint8 = 5 // 节点 ID 的位数
+	seqBits  uint8 = 7 // 序列号的位数
+	nodeMax  int64 = -1 ^ (-1 << nodeBits)
+	seqMask  int64 = -1 ^ (-1 << seqBits)
 )
 
 type Worker struct {
-	mu        sync.Mutex
-	timestamp int64
-	workerId  int64
-	number    int64
+	lastTimestamp int64
+	node          int64
+	sequence      int64
 }
 
 func NewWorker(workerId int64) (*Worker, error) {
-	if workerId < 0 || workerId > workerMax {
-		return nil, errors.New("Worker ID excess of quantity")
-	}
-	// 生成一个新节点
 	return &Worker{
-		timestamp: 0,
-		workerId:  workerId,
-		number:    0,
+		lastTimestamp: 0,
+		node:          workerId,
+		sequence:      0,
 	}, nil
 }
 
-func (w *Worker) GetId() int64 {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	now := time.Now().UnixNano() / 1e6
-	if w.timestamp == now {
-		w.number++
-		if w.number > numberMax {
-			for now <= w.timestamp {
-				now = time.Now().UnixNano() / 1e6
+func (w *Worker) GetId() string {
+	timestamp := time.Now().UnixNano() / 1000000 // 当前时间的毫秒数
+
+	if w.lastTimestamp == timestamp {
+		w.sequence = (w.sequence + 1) & seqMask
+		if w.sequence == 0 {
+			for timestamp <= w.lastTimestamp {
+				timestamp = time.Now().UnixNano() / 1000000
 			}
 		}
 	} else {
-		w.number = 0
-		w.timestamp = now
+		w.sequence = 0
 	}
-	ID := int64((now-startTime)<<timeShift | (w.workerId << workerShift) | (w.number))
-	return ID
+	w.lastTimestamp = timestamp
+	id := ((timestamp - 1288834974657) << (nodeBits + seqBits)) | (w.node << seqBits) | w.sequence
+
+	return strconv.FormatInt(id, 10)
 }

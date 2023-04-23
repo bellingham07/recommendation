@@ -8,6 +8,7 @@ import (
 	"recommendation/dto"
 	"recommendation/model"
 	"recommendation/response"
+	"strings"
 )
 
 func EshopRegister(ctx *gin.Context) {
@@ -37,7 +38,7 @@ func EshopRegister(ctx *gin.Context) {
 	newId := node.GetId()
 
 	newUser := model.TbEshop{
-		Id:       int(newId),
+		Id:       newId,
 		Username: account,
 		Name:     name,
 		Tel:      telephone,
@@ -65,7 +66,7 @@ func EshopLogin(ctx *gin.Context) {
 	//Determine if the user existed
 	var eshop model.TbEshop
 	db.Where("username=?", username).First(&eshop)
-	if eshop.Id == 0 {
+	if eshop.Id == "" {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "user is not exist"})
 		return
 	}
@@ -87,9 +88,7 @@ func EshopLogin(ctx *gin.Context) {
 
 func Info(ctx *gin.Context) {
 	user, _ := ctx.Get("user")
-
 	ctx.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"user": dto.ToUserDto(user.(model.TbEshop))}})
-
 }
 
 func GetAllUser(ctx *gin.Context) {
@@ -98,4 +97,48 @@ func GetAllUser(ctx *gin.Context) {
 	db.Select("id,name,tel,email,avatar,intro,platform,platform_url,credit_point,age").Find(&eshop)
 
 	response.Success(ctx, gin.H{"data": eshop}, "success")
+}
+
+func GetEshopInfo(ctx *gin.Context) {
+	//获取authorization header
+	tokenString := ctx.GetHeader("Authorization")
+	//validate token format
+	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+		ctx.Abort()
+		return
+	}
+	tokenString = tokenString[6:] // bearer 占六位
+	token, claims, err := common.ParseToken(tokenString)
+	//解析失败或者token无效
+	if err != nil || !token.Valid {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+		ctx.Abort()
+		return
+	}
+
+	db := common.GetDB()
+
+	var eshop model.TbEshop
+	eshop.Id = claims.UserId
+	db.Select("id", "username", "name", "tel", "email", "seller", "avatar", "intro", "platform_url", "platform", "age", "credit_point").Find(&eshop)
+	if eshop.Tel == "" {
+		response.Fail(ctx, nil, "fail")
+		return
+	}
+	response.Success(ctx, gin.H{"data": eshop}, "success")
+}
+
+func UpdateEshop(ctx *gin.Context) {
+	var eshop model.TbEshop
+	db := common.GetDB()
+	err := ctx.ShouldBind(&eshop)
+	if err != nil {
+		panic(err)
+	}
+	tx := db.Model(&eshop).Where("tel=?", eshop.Tel).Updates(model.TbEshop{Name: eshop.Name, Tel: eshop.Tel, Age: eshop.Age, Email: eshop.Email, Platform: eshop.Platform, PlatformUrl: eshop.PlatformUrl, Intro: eshop.Intro})
+	if tx.RowsAffected == 0 {
+		panic(tx.Error)
+		return
+	}
 }

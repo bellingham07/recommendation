@@ -2,10 +2,12 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"recommendation/common"
 	"recommendation/model"
 	"recommendation/response"
+	"strconv"
 	"strings"
 )
 
@@ -70,8 +72,8 @@ func SaveGood(ctx *gin.Context) {
 		panic(err)
 	}
 
-	good.Id = int(node.GetId())
-	good.Eshop = int(claims.UserId)
+	good.Id = node.GetId()
+	good.Eshop = claims.UserId
 	good.Status = 1
 
 	if common.IsGoodExist(good.Name) {
@@ -81,4 +83,19 @@ func SaveGood(ctx *gin.Context) {
 
 	db.Save(&good)
 	response.Success(ctx, nil, "添加成功")
+}
+
+func ChangeStatus(ctx *gin.Context) {
+	db := common.GetDB()
+
+	//get params
+	status := ctx.PostForm("status")
+	id, _ := strconv.Atoi(ctx.PostForm("id"))
+	tx := db.Table("tb_good").Where("id=?", id).Update("status", status)
+	log.Println(tx.Error)
+	if tx.RowsAffected == 0 {
+		response.Response(ctx, http.StatusInternalServerError, 422, nil, "server error")
+		return
+	}
+	response.Success(ctx, nil, "success")
 }

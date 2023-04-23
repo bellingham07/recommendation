@@ -44,7 +44,7 @@ func CeleRegister(ctx *gin.Context) {
 
 	// create a new entity to save the info
 	newCele := model.TbCelebrity{
-		Id:          int(newId),
+		Id:          newId,
 		Username:    account,
 		Name:        name,
 		PhoneNumber: tel,
@@ -76,7 +76,7 @@ func CeleLogin(ctx *gin.Context) {
 	// determine if the user is existed
 	var cele model.TbCelebrity
 	db.Where("username=?", username).First(&cele)
-	if cele.Id == 0 {
+	if cele.Id == "" {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 500, "mag": "user is not existed"})
 		return
 	}
@@ -142,7 +142,20 @@ func UpdateInfo(ctx *gin.Context) {
 	db := common.GetDB()
 	var cele model.TbCelebrity
 	err := ctx.ShouldBind(&cele)
-	fmt.Println(err)
+	if err != nil {
+		panic(err)
+	}
 	res := db.Model(&cele).Where("phone_number=?", cele.PhoneNumber).Updates(model.TbCelebrity{Name: cele.Name, PhoneNumber: cele.PhoneNumber, Sex: cele.Sex, Age: cele.Age, Intro: cele.Intro})
 	fmt.Println(res)
+}
+
+func GetAll(ctx *gin.Context) {
+	var user []model.TbCelebrity
+	db := common.GetDB()
+	db.Select("id,name,phone_number,email,avatar,sex,age,intro,platform,platform_url,credit_point").Find(&user)
+	if user == nil {
+		response.Response(ctx, http.StatusInternalServerError, 500, nil, "not find")
+		return
+	}
+	response.Success(ctx, gin.H{"data": user}, "success")
 }

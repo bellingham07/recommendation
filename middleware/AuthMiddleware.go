@@ -37,7 +37,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		DB.First(&user, userId)
 
 		//用户信息失效
-		if user.Id == 0 {
+		if user.Id == "" {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足3"})
 			ctx.Abort()
 			return
@@ -78,7 +78,7 @@ func AuthMiddlewareForCele() gin.HandlerFunc {
 		DB.First(&user, userId)
 
 		//用户信息失效
-		if user.Id == 0 {
+		if user.Id == "" {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足3"})
 			ctx.Abort()
 			return

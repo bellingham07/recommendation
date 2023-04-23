@@ -3,7 +3,7 @@ package model
 import "time"
 
 type TbGood struct {
-	Id             int
+	Id             string
 	Name           string  `json:"Name" form:"Name"`
 	Img            string  `json:"Img" form:"Img"`
 	Category       string  `json:"Category" form:"Category"`  //商品分类id
@@ -15,5 +15,5 @@ type TbGood struct {
 	CreateTime     time.Time
 	UpdateTime     time.Time
 	Intro          string `json:"Intro" form:"Intro"`
-	Eshop          int
+	Eshop          string
 }
