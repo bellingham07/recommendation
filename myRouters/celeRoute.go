@@ -16,8 +16,10 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.POST("/register", controller.CeleRegister)
 		cg.POST("/login", controller.CeleLogin)
 		cg.POST("/info", middleware.AuthMiddlewareForCele(), controller.InfoForCele)
-		cg.GET("/find", controller.GetUserInfo)
 		cg.POST("/updateInfo", controller.UpdateInfo)
+		cg.POST("/upload", controller.UpdateAvatar)
+
+		cg.GET("/find", controller.GetUserInfo)
 		cg.GET("/findAll", controller.GetAllUser) //获取全部商家
 		cg.GET("/allGoods", controller.GetAllGoods)
 	}

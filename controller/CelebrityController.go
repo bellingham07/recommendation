@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
 	"recommendation/common"
 	"recommendation/dto"
@@ -158,4 +159,10 @@ func GetAll(ctx *gin.Context) {
 		return
 	}
 	response.Success(ctx, gin.H{"data": user}, "success")
+}
+
+func UpdateAvatar(ctx *gin.Context) {
+	file, _ := ctx.FormFile("file")
+	log.Println(file.Filename)
+	fmt.Println(file.Filename)
 }
