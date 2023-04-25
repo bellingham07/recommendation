@@ -60,18 +60,21 @@ func EshopRegister(ctx *gin.Context) {
 func EshopLogin(ctx *gin.Context) {
 	db := common.GetDB()
 	//get parameter
-	username := ctx.PostForm("username")
-	password := ctx.PostForm("password")
+	var params model.TbEshop
 
+	err1 := ctx.ShouldBind(&params)
+	if err1 != nil {
+		panic(err1)
+	}
 	//Determine if the user existed
 	var eshop model.TbEshop
-	db.Where("username=?", username).First(&eshop)
+	db.Where("username=?", params.Username).First(&eshop)
 	if eshop.Id == "" {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "user is not exist"})
 		return
 	}
 	//Determine if the password is correct
-	if err := bcrypt.CompareHashAndPassword([]byte(eshop.Password), []byte(password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(eshop.Password), []byte(params.Password)); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "password is not correct"})
 		return
 	}

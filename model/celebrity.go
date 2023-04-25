@@ -2,8 +2,8 @@ package model
 
 type TbCelebrity struct {
 	Id          string
-	Username    string `json:"username" form:"username"`
-	Password    string `json:"password" `
+	Username    string `json:"username" form:"account"`
+	Password    string `json:"password" form:"password"`
 	PhoneNumber string `json:"phonenumber" form:"phonenumber"`
 	Email       string
 	Name        string `json:"name" form:"name"`

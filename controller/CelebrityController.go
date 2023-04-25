@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"net/http"
 	"recommendation/common"
 	"recommendation/dto"
 	"recommendation/model"
+	"recommendation/ossUtils"
 	"recommendation/response"
 	"strings"
 )
@@ -71,18 +71,22 @@ func CeleLogin(ctx *gin.Context) {
 	db := common.GetDB()
 
 	// get parameter
-	username := ctx.PostForm("username")
-	password := ctx.PostForm("password")
+	var params model.TbCelebrity
+	err1 := ctx.ShouldBind(&params)
+	if err1 != nil {
+		panic(err1)
+	}
 
 	// determine if the user is existed
 	var cele model.TbCelebrity
-	db.Where("username=?", username).First(&cele)
+
+	db.Where("username=?", params.Username).First(&cele)
 	if cele.Id == "" {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 500, "mag": "user is not existed"})
 		return
 	}
 	//determine if the password is correct
-	if err := bcrypt.CompareHashAndPassword([]byte(cele.Password), []byte(password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(cele.Password), []byte(params.Password)); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"code": 500, "msg": "password is not correct"})
 		return
 	}
@@ -130,6 +134,7 @@ func GetUserInfo(ctx *gin.Context) {
 		Age:         cele.Age,
 		Intro:       cele.Intro,
 		CreditPoint: cele.CreditPoint,
+		Avatar:      cele.Avatar,
 	}
 	response.Success(ctx, gin.H{"data": newCele}, "successful")
 }
@@ -162,7 +167,18 @@ func GetAll(ctx *gin.Context) {
 }
 
 func UpdateAvatar(ctx *gin.Context) {
+	db := common.GetDB()
+
 	file, _ := ctx.FormFile("file")
-	log.Println(file.Filename)
-	fmt.Println(file.Filename)
+	tel := ctx.PostForm("tel")
+	username := ctx.PostForm("username")
+
+	url := ossUtils.OssUtils(file, username)
+	fmt.Println("url", url)
+	tx := db.Table("tb_celebrity").Where("phone_number=?", tel).Update("avatar", url)
+	if tx.Error != nil {
+		fmt.Println("update fail")
+		return
+	}
+	response.Success(ctx, gin.H{"url": url}, "success")
 }
