@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"recommendation/common"
 	"recommendation/dto"
 	"recommendation/model"
+	"recommendation/ossUtils"
 	"recommendation/response"
 	"strings"
 )
@@ -144,4 +146,20 @@ func UpdateEshop(ctx *gin.Context) {
 		panic(tx.Error)
 		return
 	}
+}
+
+func EUpdateAvatar(ctx *gin.Context) {
+	db := common.GetDB()
+
+	file, _ := ctx.FormFile("file")
+	tel := ctx.PostForm("tel")
+	username := ctx.PostForm("username")
+
+	url := ossUtils.OssUtils(file, username)
+	tx := db.Table("tb_eshop").Where("tel=?", tel).Update("avatar", url)
+	if tx.Error != nil {
+		fmt.Println("update fail")
+		return
+	}
+	response.Success(ctx, gin.H{"url": url}, "success")
 }

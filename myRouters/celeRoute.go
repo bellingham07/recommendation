@@ -17,7 +17,7 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.POST("/login", controller.CeleLogin)
 		cg.POST("/info", middleware.AuthMiddlewareForCele(), controller.InfoForCele)
 		cg.POST("/updateInfo", controller.UpdateInfo)
-		cg.POST("/upload", controller.UpdateAvatar)
+		cg.POST("/upload", controller.UpdateAvatar) //修改头像
 
 		cg.GET("/find", controller.GetUserInfo)
 		cg.GET("/findAll", controller.GetAllUser) //获取全部商家

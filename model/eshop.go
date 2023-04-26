@@ -2,8 +2,8 @@ package model
 
 type TbEshop struct {
 	Id          string
-	Password    string `json:"Password"`
-	Username    string `json:"Username"`
+	Password    string `json:"Password" form:"password"`
+	Username    string `json:"Username" form:"account"`
 	Name        string `json:"Name"`
 	Tel         string `json:"Phonenumber"`
 	Email       string `json:"Email"`

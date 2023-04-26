@@ -174,7 +174,6 @@ func UpdateAvatar(ctx *gin.Context) {
 	username := ctx.PostForm("username")
 
 	url := ossUtils.OssUtils(file, username)
-	fmt.Println("url", url)
 	tx := db.Table("tb_celebrity").Where("phone_number=?", tel).Update("avatar", url)
 	if tx.Error != nil {
 		fmt.Println("update fail")
