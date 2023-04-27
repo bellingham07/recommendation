@@ -63,7 +63,7 @@ func CeleRegister(ctx *gin.Context) {
 	}
 
 	// return token
-	response.Success(ctx, gin.H{"token": token}, "register successful")
+	response.Success(ctx, gin.H{"token": token})
 }
 
 func CeleLogin(ctx *gin.Context) {
@@ -97,7 +97,7 @@ func CeleLogin(ctx *gin.Context) {
 		panic(err)
 	}
 
-	response.Success(ctx, gin.H{"token": token}, "login successful")
+	response.Success(ctx, gin.H{"token": token})
 }
 
 func GetUserInfo(ctx *gin.Context) {
@@ -136,7 +136,7 @@ func GetUserInfo(ctx *gin.Context) {
 		CreditPoint: cele.CreditPoint,
 		Avatar:      cele.Avatar,
 	}
-	response.Success(ctx, gin.H{"data": newCele}, "successful")
+	response.Success(ctx, gin.H{"data": newCele})
 }
 
 func InfoForCele(ctx *gin.Context) {
@@ -163,7 +163,7 @@ func GetAll(ctx *gin.Context) {
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "not find")
 		return
 	}
-	response.Success(ctx, gin.H{"data": user}, "success")
+	response.Success(ctx, gin.H{"data": user})
 }
 
 func UpdateAvatar(ctx *gin.Context) {
@@ -179,5 +179,5 @@ func UpdateAvatar(ctx *gin.Context) {
 		fmt.Println("update fail")
 		return
 	}
-	response.Success(ctx, gin.H{"url": url}, "success")
+	response.Success(ctx, gin.H{"url": url})
 }

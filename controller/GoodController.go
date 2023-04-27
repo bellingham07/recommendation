@@ -36,7 +36,7 @@ func GetAllGoods(ctx *gin.Context) {
 
 	var goods []model.TbGood
 	db.Where("eshop=?", id).Find(&goods)
-	response.Success(ctx, gin.H{"data": goods}, "success")
+	response.Success(ctx, gin.H{"data": goods})
 }
 
 func SaveGood(ctx *gin.Context) {
@@ -82,7 +82,7 @@ func SaveGood(ctx *gin.Context) {
 	}
 
 	db.Save(&good)
-	response.Success(ctx, nil, "添加成功")
+	response.Success(ctx, nil)
 }
 
 func ChangeStatus(ctx *gin.Context) {
@@ -97,5 +97,5 @@ func ChangeStatus(ctx *gin.Context) {
 		response.Response(ctx, http.StatusInternalServerError, 422, nil, "server error")
 		return
 	}
-	response.Success(ctx, nil, "success")
+	response.Success(ctx, nil)
 }

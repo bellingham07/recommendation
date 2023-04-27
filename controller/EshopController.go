@@ -56,7 +56,7 @@ func EshopRegister(ctx *gin.Context) {
 		return
 	}
 
-	response.Success(ctx, gin.H{"token": token}, "注册成功")
+	response.Success(ctx, gin.H{"token": token})
 }
 
 func EshopLogin(ctx *gin.Context) {
@@ -88,7 +88,7 @@ func EshopLogin(ctx *gin.Context) {
 	}
 
 	//return result
-	response.Success(ctx, gin.H{"token": token}, "login successful")
+	response.Success(ctx, gin.H{"token": token})
 }
 
 func Info(ctx *gin.Context) {
@@ -101,7 +101,7 @@ func GetAllUser(ctx *gin.Context) {
 	var eshop []model.TbEshop
 	db.Select("id,name,tel,email,avatar,intro,platform,platform_url,credit_point,age").Find(&eshop)
 
-	response.Success(ctx, gin.H{"data": eshop}, "success")
+	response.Success(ctx, gin.H{"data": eshop})
 }
 
 func GetEshopInfo(ctx *gin.Context) {
@@ -128,10 +128,10 @@ func GetEshopInfo(ctx *gin.Context) {
 	eshop.Id = claims.UserId
 	db.Select("id", "username", "name", "tel", "email", "seller", "avatar", "intro", "platform_url", "platform", "age", "credit_point").Find(&eshop)
 	if eshop.Tel == "" {
-		response.Fail(ctx, nil, "fail")
+		response.Fail(ctx, nil)
 		return
 	}
-	response.Success(ctx, gin.H{"data": eshop}, "success")
+	response.Success(ctx, gin.H{"data": eshop})
 }
 
 func UpdateEshop(ctx *gin.Context) {
@@ -161,5 +161,5 @@ func EUpdateAvatar(ctx *gin.Context) {
 		fmt.Println("update fail")
 		return
 	}
-	response.Success(ctx, gin.H{"url": url}, "success")
+	response.Success(ctx, gin.H{"url": url})
 }
