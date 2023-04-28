@@ -18,7 +18,9 @@ func (*EshopRoute) InitEshopRoute(g *gin.RouterGroup) {
 		eg.POST("/saveGood", controller.SaveGood)      //新增商品
 		eg.POST("/status", controller.ChangeStatus)
 		eg.POST("/update", controller.UpdateEshop)
-		eg.POST("/upload", controller.EUpdateAvatar) //修改头像
+		eg.POST("/upload", controller.EUpdateAvatar)   //修改头像
+		eg.POST("/uploadGood", controller.SaveGoodImg) //上传商品图片
+		eg.POST("/delete", controller.Delete)
 
 		eg.GET("/info", middleware.AuthMiddleware(), controller.Info) //用中间件保护我们用户信息结构 用户信息
 		eg.GET("/getAllGoods", controller.GetAllGoods)                //获取全部商品

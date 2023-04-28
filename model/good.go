@@ -5,7 +5,7 @@ import "time"
 type TbGood struct {
 	Id             string
 	Name           string  `json:"Name" form:"Name"`
-	Img            string  `json:"Img" form:"Img"`
+	Img            string  `json:"Img" form:"Img,*multipart.FileHeader"`
 	Category       string  `json:"Category" form:"Category"`  //商品分类id
 	Brand          int     `json:"Brand,string" form:"Brand"` //品牌
 	MarketPrice    float64 `json:"MarketPrice,string" form:"MarketPrice"`

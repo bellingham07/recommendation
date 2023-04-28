@@ -2,10 +2,10 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"recommendation/common"
 	"recommendation/model"
+	"recommendation/ossUtils"
 	"recommendation/response"
 	"strconv"
 	"strings"
@@ -85,16 +85,42 @@ func SaveGood(ctx *gin.Context) {
 	response.Success(ctx, nil)
 }
 
+func SaveGoodImg(ctx *gin.Context) {
+	file, _ := ctx.FormFile("file")
+	id := ctx.PostForm("id")
+
+	url := ossUtils.OssUtils(file, id)
+
+	db := common.GetDB()
+	tx := db.Table("tb_good").Where("id=?", id).Update("img", url)
+	if tx.Error != nil {
+		panic(tx.Error)
+	}
+	response.Success(ctx, gin.H{"url": url})
+}
+
 func ChangeStatus(ctx *gin.Context) {
 	db := common.GetDB()
 
 	//get params
 	status := ctx.PostForm("status")
 	id, _ := strconv.Atoi(ctx.PostForm("id"))
-	tx := db.Table("tb_good").Where("id=?", id).Update("status", status)
-	log.Println(tx.Error)
-	if tx.RowsAffected == 0 {
+	tx := db.Debug().Table("tb_good").Where("id=?", id).Update("status", status)
+	if tx.Error != nil {
 		response.Response(ctx, http.StatusInternalServerError, 422, nil, "server error")
+		return
+	}
+	response.Success(ctx, nil)
+}
+
+func Delete(ctx *gin.Context) {
+	db := common.GetDB()
+
+	var good model.TbGood
+	good.Id = ctx.PostForm("id")
+	tx := db.Delete(&good)
+	if tx.RowsAffected == 0 {
+		response.Fail(ctx, nil)
 		return
 	}
 	response.Success(ctx, nil)
