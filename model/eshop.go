@@ -5,7 +5,7 @@ type TbEshop struct {
 	Password    string `json:"Password" form:"password"`
 	Username    string `json:"Username" form:"account"`
 	Name        string `json:"Name"`
-	Tel         string `json:"Phonenumber"`
+	Tel         string `json:"Phonenumber" form:"Phonenumber"`
 	Email       string `json:"Email"`
 	Seller      string `json:"Seller"`
 	Avatar      string `json:"Avatar"`

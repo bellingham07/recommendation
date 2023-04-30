@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func GetAllGoods(ctx *gin.Context) {
+func GetAllGoodsById(ctx *gin.Context) {
 	db := common.GetDB()
 
 	//获取authorization header
@@ -35,7 +35,14 @@ func GetAllGoods(ctx *gin.Context) {
 	id := claims.UserId
 
 	var goods []model.TbGood
-	db.Where("eshop=?", id).Find(&goods)
+	db.Debug().Where("eshop=?", id).Find(&goods)
+	response.Success(ctx, gin.H{"data": goods})
+}
+
+func GetAllGoods(ctx *gin.Context) {
+	db := common.GetDB()
+	var goods []model.TbGood
+	db.Find(&goods)
 	response.Success(ctx, gin.H{"data": goods})
 }
 
@@ -123,5 +130,16 @@ func Delete(ctx *gin.Context) {
 		response.Fail(ctx, nil)
 		return
 	}
+	response.Success(ctx, nil)
+}
+
+func UpdateGood(ctx *gin.Context) {
+	var good model.TbGood
+	err := ctx.ShouldBind(&good)
+	if err != nil {
+		panic(err)
+	}
+	db := common.GetDB()
+	db.Where("id=?", good.Id).Updates(model.TbGood{Name: good.Name, Category: good.Category, Brand: good.Brand, MarketPrice: good.MarketPrice, CelebrityPrice: good.CelebrityPrice, GoodUrl: good.GoodUrl, Intro: good.Intro})
 	response.Success(ctx, nil)
 }

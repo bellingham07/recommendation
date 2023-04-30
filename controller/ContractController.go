@@ -79,6 +79,5 @@ func GetCContract(ctx *gin.Context) {
 	}
 
 	db.Where("create_by=?", claims.UserId).Find(&contracts)
-	fmt.Println("contract", contracts)
 	response.Success(ctx, gin.H{"data": contracts})
 }

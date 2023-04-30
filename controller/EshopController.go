@@ -163,3 +163,27 @@ func EUpdateAvatar(ctx *gin.Context) {
 	}
 	response.Success(ctx, gin.H{"url": url})
 }
+
+func GetAllContract(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
+		response.Fail(ctx, nil)
+		ctx.Abort()
+		return
+	}
+	tokenString = tokenString[6:]
+
+	token, claims, err := common.ParseToken(tokenString)
+	if err != nil || !token.Valid {
+		response.Fail(ctx, nil)
+		ctx.Abort()
+		return
+	}
+	var contract []model.TbContract
+	db := common.GetDB()
+	tx := db.Where("create_by=?", claims.UserId).Find(&contract)
+	if tx.Error != nil {
+		panic(tx.Error)
+	}
+	response.Success(ctx, gin.H{"data": contract})
+}
