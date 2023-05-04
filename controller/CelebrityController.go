@@ -127,6 +127,8 @@ func GetUserInfo(ctx *gin.Context) {
 	newCele := model.TbCelebrity{
 		Username:    cele.Username,
 		PhoneNumber: cele.PhoneNumber,
+		PlatformUrl: cele.PlatformUrl,
+		Platform:    cele.Platform,
 		Email:       cele.Email,
 		Name:        cele.Name,
 		RealName:    cele.RealName,
@@ -151,7 +153,7 @@ func UpdateInfo(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	res := db.Model(&cele).Where("phone_number=?", cele.PhoneNumber).Updates(model.TbCelebrity{Name: cele.Name, PhoneNumber: cele.PhoneNumber, Sex: cele.Sex, Age: cele.Age, Intro: cele.Intro})
+	res := db.Model(&cele).Where("phone_number=?", cele.PhoneNumber).Updates(model.TbCelebrity{Name: cele.Name, PhoneNumber: cele.PhoneNumber, Sex: cele.Sex, Age: cele.Age, Intro: cele.Intro, Platform: cele.Platform, PlatformUrl: cele.PlatformUrl})
 	fmt.Println(res)
 }
 

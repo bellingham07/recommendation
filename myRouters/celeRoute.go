@@ -19,6 +19,7 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.POST("/updateInfo", controller.UpdateInfo)
 		cg.POST("/upload", controller.UpdateAvatar) //修改头像
 		cg.POST("/save", controller.SaveCToE)       //创建订单
+		cg.POST("/order", controller.Save)          //保存订单
 
 		cg.GET("/find", controller.GetUserInfo)
 		cg.GET("/findAll", controller.GetAllUser) //获取全部商家
