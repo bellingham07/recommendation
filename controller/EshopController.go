@@ -10,7 +10,6 @@ import (
 	"recommendation/model"
 	"recommendation/ossUtils"
 	"recommendation/response"
-	"strings"
 )
 
 func EshopRegister(ctx *gin.Context) {
@@ -105,27 +104,10 @@ func GetAllUser(ctx *gin.Context) {
 }
 
 func GetEshopInfo(ctx *gin.Context) {
-	//获取authorization header
-	tokenString := ctx.GetHeader("Authorization")
-	//validate token format
-	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
-		ctx.Abort()
-		return
-	}
-	tokenString = tokenString[6:] // bearer 占六位
-	token, claims, err := common.ParseToken(tokenString)
-	//解析失败或者token无效
-	if err != nil || !token.Valid {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
-		ctx.Abort()
-		return
-	}
-
 	db := common.GetDB()
 
 	var eshop model.TbEshop
-	eshop.Id = claims.UserId
+	eshop.Id = common.GetId(ctx)
 	db.Select("id", "username", "name", "tel", "email", "seller", "avatar", "intro", "platform_url", "platform", "age", "credit_point").Find(&eshop)
 	if eshop.Tel == "" {
 		response.Fail(ctx, nil)
@@ -165,23 +147,9 @@ func EUpdateAvatar(ctx *gin.Context) {
 }
 
 func GetAllContract(ctx *gin.Context) {
-	tokenString := ctx.GetHeader("Authorization")
-	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-		response.Fail(ctx, nil)
-		ctx.Abort()
-		return
-	}
-	tokenString = tokenString[6:]
-
-	token, claims, err := common.ParseToken(tokenString)
-	if err != nil || !token.Valid {
-		response.Fail(ctx, nil)
-		ctx.Abort()
-		return
-	}
 	var contract []model.TbContract
 	db := common.GetDB()
-	tx := db.Where("create_by=?", claims.UserId).Find(&contract)
+	tx := db.Where("create_by=?", common.GetId(ctx)).Find(&contract)
 	if tx.Error != nil {
 		panic(tx.Error)
 	}

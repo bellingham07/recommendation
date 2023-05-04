@@ -10,7 +10,6 @@ import (
 	"recommendation/model"
 	"recommendation/ossUtils"
 	"recommendation/response"
-	"strings"
 )
 
 func CeleRegister(ctx *gin.Context) {
@@ -101,28 +100,10 @@ func CeleLogin(ctx *gin.Context) {
 }
 
 func GetUserInfo(ctx *gin.Context) {
-	//获取authorization header
-	tokenString := ctx.GetHeader("Authorization")
-	//validate token format
-	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足1.0"})
-		ctx.Abort()
-		return
-	}
-	tokenString = tokenString[6:] //Bearer 占六位
-
-	token, claims, err := common.ParseToken(tokenString)
-	//解析失败或者token无效
-	if err != nil || !token.Valid {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足2.0"})
-		ctx.Abort()
-		return
-	}
-
 	// connect database
 	db := common.GetDB()
 	var cele model.TbCelebrity
-	db.Where("id=?", claims.UserId).First(&cele)
+	db.Where("id=?", common.GetId(ctx)).First(&cele)
 
 	newCele := model.TbCelebrity{
 		Username:    cele.Username,

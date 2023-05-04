@@ -13,6 +13,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+// ReleaseToken 商家解析token
 func ReleaseToken(user model.TbEshop) (string, error) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 	claims := &Claims{
@@ -33,6 +34,7 @@ func ReleaseToken(user model.TbEshop) (string, error) {
 	return tokenString, nil
 }
 
+// ReleaseTokenForCele 网红解析token
 func ReleaseTokenForCele(user model.TbCelebrity) (string, error) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 	claims := &Claims{
@@ -53,7 +55,7 @@ func ReleaseTokenForCele(user model.TbCelebrity) (string, error) {
 	return tokenString, nil
 }
 
-// 从 token 中截取 claims 然后返回
+// ParseToken 从token中截取claims然后返回
 func ParseToken(tokenString string) (*jwt.Token, *Claims, error) {
 	claims := &Claims{}
 
