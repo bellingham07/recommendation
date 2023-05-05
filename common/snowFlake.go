@@ -44,3 +44,12 @@ func (w *Worker) GetId() string {
 
 	return strconv.FormatInt(id, 10)
 }
+
+func GenerateId() string {
+	node, err := NewWorker(1)
+	if err != nil {
+		panic(err)
+	}
+
+	return node.GetId()
+}

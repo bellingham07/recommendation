@@ -17,11 +17,14 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.POST("/login", controller.CeleLogin)
 		cg.POST("/info", middleware.AuthMiddlewareForCele(), controller.InfoForCele)
 		cg.POST("/updateInfo", controller.UpdateInfo)
-		cg.POST("/upload", controller.UpdateAvatar) //修改头像
-		cg.POST("/save", controller.SaveCToE)       //创建订单
-		cg.POST("/order", controller.Save)          //保存订单
-		cg.POST("/addr", controller.Address)        // 添加地址
+		cg.POST("/upload", controller.UpdateAvatar)   //修改头像
+		cg.POST("/save", controller.SaveCToE)         //创建订单
+		cg.POST("/order", controller.Save)            //保存订单
+		cg.POST("/addr", controller.Address)          //添加地址
+		cg.POST("/upAddr", controller.UpdateAddr)     //修改地址
+		cg.POST("/deleteAddr", controller.DeleteAddr) //删除地址
 
+		cg.GET("/address", controller.GetAddrById) //获取地址
 		cg.GET("/find", controller.GetUserInfo)
 		cg.GET("/findAll", controller.GetAllUser) //获取全部商家
 		cg.GET("/allGoods", controller.GetAllGoods)
