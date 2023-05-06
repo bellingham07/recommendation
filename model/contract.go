@@ -4,8 +4,8 @@ import "time"
 
 type TbContract struct {
 	Id         string    `form:"Id"`
-	Eshop      string    `form:"Eshop"` //电商id
-	Celebrity  string    //网红id
+	Eshop      string    `form:"Eshop"`     //电商id
+	Celebrity  string    `form:"celebrity"` //网红id
 	Good       string    //商品id
 	CreateTime time.Time //创建时间
 	CreateBy   string    //谁发起的 商家或者网红id

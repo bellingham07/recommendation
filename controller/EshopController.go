@@ -145,13 +145,3 @@ func EUpdateAvatar(ctx *gin.Context) {
 	}
 	response.Success(ctx, gin.H{"url": url})
 }
-
-func GetAllContract(ctx *gin.Context) {
-	var contract []model.TbContract
-	db := common.GetDB()
-	tx := db.Where("create_by=?", common.GetId(ctx)).Find(&contract)
-	if tx.Error != nil {
-		panic(tx.Error)
-	}
-	response.Success(ctx, gin.H{"data": contract})
-}

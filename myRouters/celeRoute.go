@@ -18,7 +18,7 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.POST("/info", middleware.AuthMiddlewareForCele(), controller.InfoForCele)
 		cg.POST("/updateInfo", controller.UpdateInfo)
 		cg.POST("/upload", controller.UpdateAvatar)   //修改头像
-		cg.POST("/save", controller.SaveCToE)         //创建订单
+		cg.POST("/save", controller.SaveCToE)         //创建合约
 		cg.POST("/order", controller.Save)            //保存订单
 		cg.POST("/addr", controller.Address)          //添加地址
 		cg.POST("/upAddr", controller.UpdateAddr)     //修改地址
@@ -28,6 +28,6 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.GET("/find", controller.GetUserInfo)
 		cg.GET("/findAll", controller.GetAllUser) //获取全部商家
 		cg.GET("/allGoods", controller.GetAllGoods)
-		cg.GET("/getContract", controller.GetCContract)
+		cg.GET("/contract", controller.GetContract)
 	}
 }
