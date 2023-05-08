@@ -1,11 +1,2 @@
 server:
   port: 1016
-datasource:
-  driverName: mysql
-  host: ip
-  port: 3306
-  database: name
-  username: username
-  password: password
-  charset: utf8
-  log-mode: true

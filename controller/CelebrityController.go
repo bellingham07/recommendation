@@ -79,7 +79,7 @@ func CeleLogin(ctx *gin.Context) {
 	// determine if the user is existed
 	var cele model.TbCelebrity
 
-	db.Where("username=?", params.Username).First(&cele)
+	db.Debug().Where("username=?", params.Username).First(&cele)
 	if cele.Id == "" {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 500, "mag": "user is not existed"})
 		return
