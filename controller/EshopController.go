@@ -15,17 +15,18 @@ import (
 func EshopRegister(ctx *gin.Context) {
 	db := common.GetDB()
 	//获取参数
-	account := ctx.PostForm("username")
-	telephone := ctx.PostForm("phonenumber")
-	name := ctx.PostForm("name")
-	password := ctx.PostForm("password")
+	var eshop model.TbEshop
+	err1 := ctx.ShouldBind(&eshop)
+	if err1 != nil {
+		panic(err1)
+	}
 	//数据验证
-	if common.IsTelephoneExist(db, telephone) {
+	if common.IsTelephoneExist(db, eshop.Tel) {
 		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "用户已经存在")
 		return
 	}
 
-	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(eshop.Password), bcrypt.DefaultCost)
 	if err != nil {
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "加密错误")
 		return
@@ -40,13 +41,13 @@ func EshopRegister(ctx *gin.Context) {
 
 	newUser := model.TbEshop{
 		Id:       newId,
-		Username: account,
-		Name:     name,
-		Tel:      telephone,
+		Username: eshop.Username,
+		Name:     eshop.Name,
+		Tel:      eshop.Tel,
 		Password: string(hasedPassword),
 	}
 
-	db.Create(&newUser)
+	db.Debug().Create(&newUser)
 
 	//发放token
 	token, err := common.ReleaseToken(newUser)
@@ -62,14 +63,13 @@ func EshopLogin(ctx *gin.Context) {
 	db := common.GetDB()
 	//get parameter
 	var params model.TbEshop
-
 	err1 := ctx.ShouldBind(&params)
 	if err1 != nil {
 		panic(err1)
 	}
 	//Determine if the user existed
 	var eshop model.TbEshop
-	db.Where("username=?", params.Username).First(&eshop)
+	db.Debug().Where("username=?", params.Username).First(&eshop)
 	if eshop.Id == "" {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "user is not exist"})
 		return

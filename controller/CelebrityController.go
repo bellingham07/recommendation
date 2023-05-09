@@ -81,7 +81,7 @@ func CeleLogin(ctx *gin.Context) {
 
 	db.Debug().Where("username=?", params.Username).First(&cele)
 	if cele.Id == "" {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 500, "mag": "user is not existed"})
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 500, "msg": "user is not existed"})
 		return
 	}
 	//determine if the password is correct

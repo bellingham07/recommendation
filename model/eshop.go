@@ -2,18 +2,18 @@ package model
 
 type TbEshop struct {
 	Id          string
-	Password    string `json:"password" form:"password"`
 	Username    string `json:"account" form:"account"`
-	Name        string `json:"Name"`
-	Tel         string `json:"Phonenumber" form:"Phonenumber"`
-	Email       string `json:"Email"`
-	Seller      string `json:"Seller"`
-	Avatar      string `json:"Avatar"`
-	Intro       string `json:"Intro"`
-	PlatformUrl string `json:"PlatformUrl"`
-	Platform    string `json:"Platform"`
-	Category    int    `json:"Category"`
-	CreditPoint int    `json:"CreditPoint,string"`
-	Likes       int    `json:"Likes"`
-	Age         int    `json:"Age,string"`
+	Password    string `json:"password" form:"password"`
+	Name        string `json:"Name" form:"name"`
+	Tel         string `json:"Phonenumber" form:"phonenumber"`
+	Email       string `json:"Email" form:"email"`
+	Seller      string `json:"Seller" form:"seller"`
+	Avatar      string `json:"Avatar" form:"avatar"`
+	Intro       string `json:"Intro" form:"intro"`
+	PlatformUrl string `json:"PlatformUrl" form:"PlatformUrl"`
+	Platform    string `json:"Platform" form:"Platform"`
+	Category    int    `json:"Category" form:"Category"`
+	CreditPoint int    `json:"CreditPoint,string" form:"CreditPoint"`
+	Likes       int    `json:"Likes" form:"Likes"`
+	Age         int    `json:"Age,string" form:"Age"`
 }

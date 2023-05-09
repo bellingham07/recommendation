@@ -75,7 +75,7 @@ func ChangeStatus(ctx *gin.Context) {
 	//get params
 	status := ctx.PostForm("status")
 	id, _ := strconv.Atoi(ctx.PostForm("id"))
-	tx := db.Debug().Table("tb_good").Where("id=?", id).Update("status", status)
+	tx := db.Table("tb_good").Where("id=?", id).Update("status", status)
 	if tx.Error != nil {
 		response.Response(ctx, http.StatusInternalServerError, 422, nil, "server error")
 		return
