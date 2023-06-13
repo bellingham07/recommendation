@@ -16,8 +16,8 @@ func CeleRegister(ctx *gin.Context) {
 	// connect database
 	db := common.GetDB()
 	// get register parameter
-	account := ctx.PostForm("username")
-	password := ctx.PostForm("username")
+	account := ctx.PostForm("account")
+	password := ctx.PostForm("password")
 	name := ctx.PostForm("name")
 	tel := ctx.PostForm("phonenumber")
 

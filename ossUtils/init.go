@@ -8,16 +8,17 @@ import (
 )
 
 func OssUtils(file *multipart.FileHeader, username string) string {
-	client, err := oss.New("oss-cn-beijing.aliyuncs.com", "accessKeyId", "accessKeySecret")
+	client, err := oss.New("cn-beijing.oss.aliyuncs.com", "key", "key secret")
 	if err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(-1)
 	}
 
+	fmt.Println("user:", username)
 	// yourBucketName填写存储空间名称。
-	bucketName := "bucketName"
+	bucketName := "bucketName-c"
 	// yourObjectName填写Object完整路径，完整路径不包含Bucket名称。
-	objectName := username + "avatar"
+	objectName := username + "avatar.jpg"
 	// yourLocalFileName填写本地文件的完整路径。
 	tempFile, _ := file.Open()
 	// 获取存储空间。
@@ -26,16 +27,15 @@ func OssUtils(file *multipart.FileHeader, username string) string {
 		fmt.Println("err")
 		handleError(err)
 	}
-	// 上传文件
 
+	// 上传文件
 	err = bucket.PutObject(objectName, tempFile)
 	if err != nil {
 		fmt.Println("err2")
-
 		handleError(err)
 	}
 
-	return "https://bucketNAme.oss-cn-beijing.aliyuncs.com/" + objectName
+	return "https://bucketName-c.oss-cn-beijing.aliyuncs.com/" + objectName
 }
 
 func handleError(err error) {

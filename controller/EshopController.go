@@ -137,7 +137,10 @@ func EUpdateAvatar(ctx *gin.Context) {
 	tel := ctx.PostForm("tel")
 	username := ctx.PostForm("username")
 
+	fmt.Println("user:", username)
 	url := ossUtils.OssUtils(file, username)
+	fmt.Println("url:", url)
+
 	tx := db.Debug().Table("tb_eshop").Where("tel=?", tel).Update("avatar", url)
 	if tx.Error != nil {
 		fmt.Println("update fail")

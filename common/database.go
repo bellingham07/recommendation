@@ -9,7 +9,7 @@ import (
 var DB *gorm.DB
 
 func InitDB() *gorm.DB {
-	dsn := "cao:cao123456@tcp(43.143.225.87:3306)/rec_sys?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "user:pwd@tcp(ip:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DriverName: "mysql",
 		DSN:        dsn, // Data Source Name，参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name
