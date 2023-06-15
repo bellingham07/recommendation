@@ -23,6 +23,8 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.POST("/addr", controller.Address)          //添加地址
 		cg.POST("/upAddr", controller.UpdateAddr)     //修改地址
 		cg.POST("/deleteAddr", controller.DeleteAddr) //删除地址
+		cg.POST("/isLiked", controller.IsLiked)       //获取是否点赞
+		cg.POST("/like", controller.Like)             //获取是否点赞
 
 		cg.GET("/address", controller.GetAddrById) //获取地址
 		cg.GET("/find", controller.GetUserInfo)

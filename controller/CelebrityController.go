@@ -164,3 +164,65 @@ func UpdateAvatar(ctx *gin.Context) {
 	}
 	response.Success(ctx, gin.H{"url": url})
 }
+
+func IsLiked(c *gin.Context) {
+	// 获取被点赞对象id
+	id := c.PostForm("likedId")
+	// 获取当前登录用户uid
+	uid := common.GetId(c)
+	// 判断当前被点赞对象是否被当前用户点赞 select * form tb_like where like_id= iid and liked_id=id
+	flag := isLiked(uid, id)
+	if flag {
+		c.JSON(200, gin.H{"data": true})
+	} else {
+		// 不存在返回false
+		c.JSON(200, gin.H{"data": false})
+	}
+}
+
+func Like(c *gin.Context) {
+	db := common.GetDB()
+	// 获取被点赞对象id
+	id := c.PostForm("id")
+	// 获取当前登录用户id
+	uid := common.GetId(c)
+	// 查询是否被点赞
+	flag := isLiked(uid, id)
+	if !flag {
+		node, err := common.NewWorker(1)
+		if err != nil {
+			panic(err)
+		}
+
+		newId := node.GetId()
+		// 没有，添加点赞信息到点赞表
+		like := model.TbLike{
+			Id:      newId,
+			LikedId: id,
+			LikeId:  uid,
+		}
+		db.Debug().Save(&like)
+		// 点赞数加一
+		db.Debug().Exec("UPDATE tb_eshop SET likes=likes+1 WHERE id=?", id)
+		c.JSON(200, gin.H{"data": true})
+	} else {
+		// 有，取消点赞 删除点赞表点赞信息
+		db.Debug().Where("like_id=?", uid).Where("liked_id=?", id).Delete(&model.TbLike{})
+		// 点赞数减一
+		db.Debug().Exec("UPDATE tb_eshop SET likes=likes-1 WHERE id=?", id)
+		c.JSON(200, gin.H{"data": false})
+	}
+
+}
+
+func isLiked(likeId string, likedId string) bool {
+	db := common.GetDB()
+
+	var like model.TbLike
+	tx := db.Debug().Where("like_id=?", likeId).Where("liked_id=?", likedId).Find(&like)
+	// 存在返回true
+	if tx.RowsAffected != 0 {
+		return true
+	}
+	return false
+}
