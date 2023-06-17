@@ -98,7 +98,7 @@ func Info(ctx *gin.Context) {
 func GetAllUser(ctx *gin.Context) {
 	db := common.GetDB()
 	var eshop []model.TbEshop
-	db.Select("id,name,tel,email,avatar,intro,platform,platform_url,credit_point,age").Find(&eshop)
+	db.Select("id,name,tel,email,avatar,intro,platform,platform_url,credit_point,age,likes").Find(&eshop)
 
 	response.Success(ctx, gin.H{"data": eshop})
 }
