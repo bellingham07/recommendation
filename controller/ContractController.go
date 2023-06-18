@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"recommendation/common"
+	"recommendation/database"
 	"recommendation/model"
 	"recommendation/response"
 	"time"
@@ -11,7 +12,7 @@ import (
 
 // SaveCToE 网红向商家发起合作
 func SaveCToE(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	var contract model.TbContract
 
@@ -45,7 +46,8 @@ func SaveCToE(ctx *gin.Context) {
 }
 
 func GetContract(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
+
 	var contracts []model.TbContract
 
 	db.Where("create_by=?", common.GetId(ctx)).Find(&contracts)
@@ -54,8 +56,7 @@ func GetContract(ctx *gin.Context) {
 
 // SaveEToC 商家向网红发起合作
 func SaveEToC(c *gin.Context) {
-	db := common.GetDB()
-
+	db := database.GetDB()
 	var contract model.TbContract
 
 	//雪花算法生成id

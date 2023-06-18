@@ -3,13 +3,15 @@ package common
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"recommendation/database"
 	"recommendation/model"
 	"strings"
 )
 
 // IsGoodExist 商品是否存在
 func IsGoodExist(name string) bool {
-	db := GetDB()
+	db := database.GetDB()
+
 	var good model.TbGood
 	db.Where("name=?", name).First(&good)
 	if good.Id != "" {

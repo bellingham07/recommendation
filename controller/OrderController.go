@@ -3,11 +3,12 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"recommendation/common"
+	"recommendation/database"
 	"recommendation/model"
 )
 
 func Save(c *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	var good model.TbGood
 	err := c.ShouldBind(&good)
@@ -43,7 +44,7 @@ func Save(c *gin.Context) {
 }
 
 func ESave(c *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	var good model.TbGood
 	err := c.ShouldBind(&good)

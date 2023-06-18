@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"recommendation/common"
+	"recommendation/database"
 	"recommendation/model"
 	"recommendation/ossUtils"
 	"recommendation/response"
@@ -11,7 +12,7 @@ import (
 )
 
 func GetAllGoodsById(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	id := common.GetId(ctx)
 
@@ -21,14 +22,15 @@ func GetAllGoodsById(ctx *gin.Context) {
 }
 
 func GetAllGoods(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
+
 	var goods []model.TbGood
 	db.Find(&goods)
 	response.Success(ctx, gin.H{"data": goods})
 }
 
 func SaveGood(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	var good model.TbGood
 	err1 := ctx.ShouldBind(&good)
@@ -61,7 +63,8 @@ func SaveGoodImg(ctx *gin.Context) {
 
 	url := ossUtils.OssUtils(file, id)
 
-	db := common.GetDB()
+	db := database.GetDB()
+
 	tx := db.Table("tb_good").Where("id=?", id).Update("img", url)
 	if tx.Error != nil {
 		panic(tx.Error)
@@ -70,7 +73,7 @@ func SaveGoodImg(ctx *gin.Context) {
 }
 
 func ChangeStatus(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	//get params
 	status := ctx.PostForm("status")
@@ -84,7 +87,7 @@ func ChangeStatus(ctx *gin.Context) {
 }
 
 func Delete(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	var good model.TbGood
 	good.Id = ctx.PostForm("id")
@@ -102,7 +105,8 @@ func UpdateGood(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	db := common.GetDB()
+	db := database.GetDB()
+
 	db.Where("id=?", good.Id).Updates(model.TbGood{Name: good.Name, Category: good.Category, Brand: good.Brand, MarketPrice: good.MarketPrice, CelebrityPrice: good.CelebrityPrice, GoodUrl: good.GoodUrl, Intro: good.Intro})
 	response.Success(ctx, nil)
 }

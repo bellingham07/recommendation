@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"recommendation/common"
+	"recommendation/database"
 	"recommendation/model"
 	"recommendation/response"
 )
@@ -20,7 +21,7 @@ func Address(c *gin.Context) {
 	// 生成全局唯一id
 	address.Id = common.GenerateId()
 
-	db := common.GetDB()
+	db := database.GetDB()
 	tx := db.Debug().Save(&address)
 	if tx.RowsAffected == 0 {
 		panic(tx.Error)
@@ -30,8 +31,8 @@ func Address(c *gin.Context) {
 
 func GetAddrById(c *gin.Context) {
 	var address []model.TbAddress
+	db := database.GetDB()
 
-	db := common.GetDB()
 	tx := db.Debug().Where("user=?", common.GetId(c)).Find(&address)
 	if tx.Error != nil {
 		panic(tx.Error)
@@ -45,7 +46,8 @@ func UpdateAddr(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	db := common.GetDB()
+	db := database.GetDB()
+
 	tx := db.Model(&address).Where("id=?", address.Id).Updates(model.TbAddress{Name: address.Name, Phonenumber: address.Phonenumber, Detail: address.Detail, Province: address.Province, City: address.City, Area: address.Area, Town: address.Town})
 	if tx.RowsAffected == 0 {
 		panic(tx.Error)
@@ -56,7 +58,8 @@ func UpdateAddr(c *gin.Context) {
 func DeleteAddr(c *gin.Context) {
 	var address model.TbAddress
 	address.Id = c.PostForm("id")
-	db := common.GetDB()
+	db := database.GetDB()
+
 	tx := db.Delete(&address)
 	if tx.RowsAffected == 0 {
 		panic(tx.Error)

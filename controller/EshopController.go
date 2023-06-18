@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"recommendation/common"
+	"recommendation/database"
 	"recommendation/dto"
 	"recommendation/model"
 	"recommendation/ossUtils"
@@ -13,7 +14,8 @@ import (
 )
 
 func EshopRegister(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
+
 	//获取参数
 	var eshop model.TbEshop
 	err1 := ctx.ShouldBind(&eshop)
@@ -60,7 +62,8 @@ func EshopRegister(ctx *gin.Context) {
 }
 
 func EshopLogin(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
+
 	//get parameter
 	var params model.TbEshop
 	err1 := ctx.ShouldBind(&params)
@@ -96,7 +99,8 @@ func Info(ctx *gin.Context) {
 }
 
 func GetAllUser(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
+
 	var eshop []model.TbEshop
 	db.Select("id,name,tel,email,avatar,intro,platform,platform_url,credit_point,age,likes").Find(&eshop)
 
@@ -104,7 +108,7 @@ func GetAllUser(ctx *gin.Context) {
 }
 
 func GetEshopInfo(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	var eshop model.TbEshop
 	eshop.Id = common.GetId(ctx)
@@ -118,7 +122,8 @@ func GetEshopInfo(ctx *gin.Context) {
 
 func UpdateEshop(ctx *gin.Context) {
 	var eshop model.TbEshop
-	db := common.GetDB()
+	db := database.GetDB()
+
 	err := ctx.ShouldBind(&eshop)
 	if err != nil {
 		panic(err)
@@ -131,7 +136,7 @@ func UpdateEshop(ctx *gin.Context) {
 }
 
 func EUpdateAvatar(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	file, _ := ctx.FormFile("file")
 	tel := ctx.PostForm("tel")

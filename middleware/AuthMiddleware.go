@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"recommendation/common"
+	"recommendation/database"
 	"recommendation/model"
 )
 
@@ -12,9 +13,10 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		//验证通过后获取claims中的userId
 		userId := common.GetId(ctx)
-		DB := common.GetDB()
+		db := database.GetDB()
+
 		var user model.TbEshop
-		DB.First(&user, userId)
+		db.First(&user, userId)
 
 		//用户信息失效
 		if user.Id == "" {
@@ -34,9 +36,10 @@ func AuthMiddlewareForCele() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		//验证通过后获取claims中的userId
 		userId := common.GetId(ctx)
-		DB := common.GetDB()
+		db := database.GetDB()
+
 		var user model.TbCelebrity
-		DB.First(&user, userId)
+		db.First(&user, userId)
 
 		//用户信息失效
 		if user.Id == "" {

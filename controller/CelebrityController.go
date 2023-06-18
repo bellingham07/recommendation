@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"recommendation/common"
+	"recommendation/database"
 	"recommendation/dto"
 	"recommendation/model"
 	"recommendation/ossUtils"
@@ -14,7 +15,8 @@ import (
 
 func CeleRegister(ctx *gin.Context) {
 	// connect database
-	db := common.GetDB()
+	db := database.GetDB()
+
 	// get register parameter
 	account := ctx.PostForm("account")
 	password := ctx.PostForm("password")
@@ -52,7 +54,7 @@ func CeleRegister(ctx *gin.Context) {
 	}
 
 	// save to database
-	db.Create(&newCele)
+	db.Debug().Create(&newCele)
 
 	// distribute token
 	token, err := common.ReleaseTokenForCele(newCele)
@@ -67,7 +69,7 @@ func CeleRegister(ctx *gin.Context) {
 
 func CeleLogin(ctx *gin.Context) {
 	// connect database
-	db := common.GetDB()
+	db := database.GetDB()
 
 	// get parameter
 	var params model.TbCelebrity
@@ -101,7 +103,8 @@ func CeleLogin(ctx *gin.Context) {
 
 func GetUserInfo(ctx *gin.Context) {
 	// connect database
-	db := common.GetDB()
+	db := database.GetDB()
+
 	var cele model.TbCelebrity
 	db.Where("id=?", common.GetId(ctx)).First(&cele)
 
@@ -128,7 +131,8 @@ func InfoForCele(ctx *gin.Context) {
 }
 
 func UpdateInfo(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
+
 	var cele model.TbCelebrity
 	err := ctx.ShouldBind(&cele)
 	if err != nil {
@@ -140,7 +144,8 @@ func UpdateInfo(ctx *gin.Context) {
 
 func GetAll(ctx *gin.Context) {
 	var user []model.TbCelebrity
-	db := common.GetDB()
+	db := database.GetDB()
+
 	db.Select("id,name,phone_number,email,avatar,sex,age,intro,platform,platform_url,credit_point").Find(&user)
 	if user == nil {
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "not find")
@@ -150,7 +155,7 @@ func GetAll(ctx *gin.Context) {
 }
 
 func UpdateAvatar(ctx *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	file, _ := ctx.FormFile("file")
 	tel := ctx.PostForm("tel")
@@ -181,7 +186,8 @@ func IsLiked(c *gin.Context) {
 }
 
 func Like(c *gin.Context) {
-	db := common.GetDB()
+	db := database.GetDB()
+
 	// 获取被点赞对象id
 	id := c.PostForm("id")
 	// 获取当前登录用户id
@@ -216,7 +222,7 @@ func Like(c *gin.Context) {
 }
 
 func isLiked(likeId string, likedId string) bool {
-	db := common.GetDB()
+	db := database.GetDB()
 
 	var like model.TbLike
 	tx := db.Debug().Where("like_id=?", likeId).Where("liked_id=?", likedId).Find(&like)
