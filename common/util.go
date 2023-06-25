@@ -2,10 +2,12 @@ package common
 
 import (
 	"github.com/gin-gonic/gin"
+	"math/rand"
 	"net/http"
 	"recommendation/database"
 	"recommendation/model"
 	"strings"
+	"time"
 )
 
 // IsGoodExist 商品是否存在
@@ -39,4 +41,15 @@ func GetId(c *gin.Context) string {
 		c.Abort()
 	}
 	return claims.UserId
+}
+
+// 随机成验证码码
+func RandCode() string {
+	s := "1234567890"
+	code := ""
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < 6; i++ {
+		code += string(s[rand.Intn(len(s))])
+	}
+	return code
 }

@@ -18,14 +18,14 @@ func CeleRegister(ctx *gin.Context) {
 	db := database.GetDB()
 
 	// get register parameter
-	account := ctx.PostForm("account")
 	password := ctx.PostForm("password")
-	name := ctx.PostForm("name")
-	tel := ctx.PostForm("phonenumber")
+	email := ctx.PostForm("email")
+	MailCode := ctx.PostForm("mail_code")
+	fmt.Println("mail code", MailCode)
 
 	//data validation
-	if common.IsTelephoneExist(db, tel) {
-		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "tel is existed")
+	if common.IsEmailExisted(db, email) {
+		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "邮箱已存在")
 		return
 	}
 
@@ -46,11 +46,10 @@ func CeleRegister(ctx *gin.Context) {
 
 	// create a new entity to save the info
 	newCele := model.TbCelebrity{
-		Id:          newId,
-		Username:    account,
-		Name:        name,
-		PhoneNumber: tel,
-		Password:    string(hashedPassword),
+		Id:       newId,
+		Email:    email,
+		Name:     "新用户",
+		Password: string(hashedPassword),
 	}
 
 	// save to database
@@ -231,4 +230,12 @@ func isLiked(likeId string, likedId string) bool {
 		return true
 	}
 	return false
+}
+
+func SendMailCode(c *gin.Context) {
+	email := c.PostForm("email")
+	err := common.MailSendCode(email, "852369")
+	if err != nil {
+		return
+	}
 }

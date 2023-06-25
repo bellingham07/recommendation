@@ -5,9 +5,9 @@ import (
 	"recommendation/model"
 )
 
-func IsTelephoneExist(db *gorm.DB, telephone string) bool {
+func IsEmailExisted(db *gorm.DB, email string) bool {
 	var user model.TbEshop
-	db.Where("tel=?", telephone).First(&user)
+	db.Where("email=?", email).First(&user)
 	if user.Id != "" {
 		return true
 	}

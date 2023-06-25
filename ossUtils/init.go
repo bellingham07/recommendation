@@ -38,6 +38,7 @@ func OssUtils(file *multipart.FileHeader, username string) string {
 	}
 
 	// 上传文件
+	// 上传文件名 文件
 	err = bucket.PutObject(objectName, tempFile)
 	if err != nil {
 		fmt.Println("err2")

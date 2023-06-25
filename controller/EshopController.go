@@ -23,8 +23,8 @@ func EshopRegister(ctx *gin.Context) {
 		panic(err1)
 	}
 	//数据验证
-	if common.IsTelephoneExist(db, eshop.Tel) {
-		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "用户已经存在")
+	if common.IsEmailExisted(db, eshop.Email) {
+		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "邮箱已存在")
 		return
 	}
 
