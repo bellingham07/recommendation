@@ -225,7 +225,6 @@ func Like(c *gin.Context) {
 		db.Debug().Exec("UPDATE tb_eshop SET likes=likes-1 WHERE id=?", id)
 		c.JSON(200, gin.H{"data": false})
 	}
-
 }
 
 func isLiked(likeId string, likedId string) bool {

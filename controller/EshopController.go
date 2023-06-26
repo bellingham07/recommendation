@@ -16,19 +16,25 @@ import (
 func EshopRegister(ctx *gin.Context) {
 	db := database.GetDB()
 
-	//获取参数
-	var eshop model.TbEshop
-	err1 := ctx.ShouldBind(&eshop)
-	if err1 != nil {
-		panic(err1)
-	}
-	//数据验证
-	if common.IsEmailExisted(db, eshop.Email) {
+	// get register params
+	password := ctx.PostForm("password")
+	email := ctx.PostForm("email")
+	MailCode := ctx.PostForm("mail_code")
+	fmt.Println("mail code", MailCode)
+
+	// 邮箱是否有效
+	if common.IsEmailExisted(db, email) {
 		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "邮箱已存在")
 		return
 	}
 
-	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(eshop.Password), bcrypt.DefaultCost)
+	// 验证码是否匹配
+	if !common.IsEmailCodeValid(MailCode, email) {
+		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "验证码错误")
+		return
+	}
+
+	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "加密错误")
 		return
@@ -43,9 +49,8 @@ func EshopRegister(ctx *gin.Context) {
 
 	newUser := model.TbEshop{
 		Id:       newId,
-		Username: eshop.Username,
-		Name:     eshop.Name,
-		Tel:      eshop.Tel,
+		Name:     "新用户",
+		Email:    email,
 		Password: string(hasedPassword),
 	}
 
