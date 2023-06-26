@@ -10,33 +10,41 @@ import (
 	"recommendation/dto"
 	"recommendation/model"
 	"recommendation/ossUtils"
+	"recommendation/redis"
 	"recommendation/response"
+	"time"
 )
 
 func CeleRegister(ctx *gin.Context) {
 	// connect database
 	db := database.GetDB()
 
-	// get register parameter
+	// get register params
 	password := ctx.PostForm("password")
 	email := ctx.PostForm("email")
 	MailCode := ctx.PostForm("mail_code")
 	fmt.Println("mail code", MailCode)
 
-	//data validation
+	// 邮箱是否有效
 	if common.IsEmailExisted(db, email) {
 		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "邮箱已存在")
 		return
 	}
 
-	// encrypt password
+	// 验证码是否匹配
+	if !common.IsEmailCodeValid(MailCode, email) {
+		response.Response(ctx, http.StatusUnprocessableEntity, 422, nil, "验证码错误")
+		return
+	}
+
+	// 加密密码
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		response.Response(ctx, http.StatusInternalServerError, 500, nil, "server error")
 		return
 	}
 
-	//use snowflake generate a new id
+	// use snowflake generate a new id
 	node, err := common.NewWorker(1)
 	if err != nil {
 		panic(err)
@@ -234,7 +242,12 @@ func isLiked(likeId string, likedId string) bool {
 
 func SendMailCode(c *gin.Context) {
 	email := c.PostForm("email")
-	err := common.MailSendCode(email, "852369")
+	code := common.RandCode()
+	// 验证码存入redis
+	rds := redis.GetRedis()
+	rds.Set(c, email, code, 5*time.Minute)
+	// 发送验证码
+	err := common.MailSendCode(email, code)
 	if err != nil {
 		return
 	}

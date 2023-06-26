@@ -3,7 +3,7 @@ package myRouters
 import (
 	"github.com/gin-gonic/gin"
 	"recommendation/controller"
-	"recommendation/middleware"
+	"recommendation/middle"
 )
 
 type CeleRoute struct {
@@ -15,7 +15,7 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 	{
 		cg.POST("/register", controller.CeleRegister)
 		cg.POST("/login", controller.CeleLogin)
-		cg.POST("/info", middleware.AuthMiddlewareForCele(), controller.InfoForCele)
+		cg.POST("/info", middle.AuthMiddlewareForCele(), controller.InfoForCele)
 		cg.POST("/updateInfo", controller.UpdateInfo)
 		cg.POST("/upload", controller.UpdateAvatar)         //修改头像
 		cg.POST("/save", controller.SaveCToE)               //创建合约

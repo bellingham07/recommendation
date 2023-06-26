@@ -43,7 +43,7 @@ func GetId(c *gin.Context) string {
 	return claims.UserId
 }
 
-// 随机成验证码码
+// RandCode 随机成验证码码
 func RandCode() string {
 	s := "1234567890"
 	code := ""

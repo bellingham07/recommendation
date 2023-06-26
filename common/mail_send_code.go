@@ -26,10 +26,10 @@ func MailSendCode(mail, code string) error {
 	password := config.GetString("mail.password")
 
 	e := email.NewEmail()
-	e.From = "Get <" + username + ">"
+	e.From = "bellingham07 <" + username + ">"
 	e.To = []string{mail}
-	e.Subject = "验证码发送测试"
-	e.HTML = []byte("您的验证码为:<h1>" + code + "</h1>")
+	e.Subject = "网红商家业务对接平台"
+	e.HTML = []byte("您的验证码为:<h1>" + code + "</h1>" + "五分钟内有效")
 	err = e.SendWithTLS("smtp.163.com:465", smtp.PlainAuth("", username, password, "smtp.163.com"),
 		&tls.Config{InsecureSkipVerify: true, ServerName: "smtp.163.com"})
 	if err != nil {

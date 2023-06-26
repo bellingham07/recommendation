@@ -2,7 +2,7 @@ package initial
 
 import (
 	"github.com/gin-gonic/gin"
-	"recommendation/middleware"
+	"recommendation/middle"
 	"recommendation/myRouters"
 )
 
@@ -12,7 +12,7 @@ func Routers() *gin.Engine {
 	myRouter := new(myRouters.SystemGroup)
 
 	// 配置跨域
-	router.Use(middleware.CORSMiddleware())
+	router.Use(middle.CORSMiddleware())
 	groupRegistry := router.Group("/")
 	{
 		myRouter.CeleRoute.InitCeleRoute(groupRegistry)
