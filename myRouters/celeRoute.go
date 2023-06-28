@@ -26,6 +26,7 @@ func (*CeleRoute) InitCeleRoute(g *gin.RouterGroup) {
 		cg.POST("/isLiked", controller.IsLiked)             //获取是否点赞
 		cg.POST("/like", controller.Like)                   //获取是否点赞
 		cg.POST("/send/mail/code", controller.SendMailCode) // 发送验证码
+		cg.GET("/user", controller.User)
 
 		cg.GET("/address", controller.GetAddrById) //获取地址
 		cg.GET("/find", controller.GetUserInfo)

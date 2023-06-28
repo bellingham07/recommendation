@@ -251,3 +251,13 @@ func SendMailCode(c *gin.Context) {
 		return
 	}
 }
+
+func User(c *gin.Context) {
+	var req model.ReqListUsers
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		c.String(400, err.Error())
+		return
+	}
+	fmt.Println(req)
+}
