@@ -8,9 +8,7 @@ import (
 
 func Routers() *gin.Engine {
 	router := gin.New()
-
 	myRouter := new(myRouters.SystemGroup)
-
 	// 配置跨域
 	router.Use(middle.CORSMiddleware())
 	groupRegistry := router.Group("/")
