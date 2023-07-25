@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"recommendation/common"
 	"recommendation/database"
@@ -72,7 +71,6 @@ func SaveEToC(c *gin.Context) {
 		panic(err)
 	}
 
-	fmt.Println(contract.Celebrity)
 	//获取当前用户id celebrity Id
 	contract.Eshop = common.GetId(c)
 
